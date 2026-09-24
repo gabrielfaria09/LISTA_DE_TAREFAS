@@ -1,14 +1,29 @@
-const tarefas = [
-  { id: 1, titulo: "Estudar JavaScript", concluida: false, prioridade: "alta" },
-  { id: 2, titulo: "Fazer exercícios do DOM", concluida: true, prioridade: "media" },
-  { id: 3, titulo: "Revisar métodos de array", concluida: false, prioridade: "baixa" }
-];
+const tarefas = [];
 
-const nometarefa = document.getElementById("nomeTarefa").value;
-const prioridade = document.getElementById("prioridade").value;
+const nometarefa = document.getElementById("nomeTarefa");
+const prioridade = document.getElementById("prioridade");
 const catalogoTarefas = document.getElementById("catalogoTarefas");
+const botaoSubmeter = document.getElementById("botaoSubmeter");
 
+
+function criarTarefas(){
+    tarefas.push({titulo: nometarefa.value, prioridade: prioridade.value});
+    console.log(tarefas);
+    exibirTarefas();
+}
 
 function exibirTarefas(){
-    tarefas.push({título: nometarefa, prioridade: prioridade});
+  tarefas.forEach(tarefa => {
+
+    catalogoTarefas.innerHTML = ``;
+
+    const lista = document.createElement("li");
+    lista.innerHTML = `<p>Nome da tarefa: ${tarefa.titulo}</p>
+    <p>Prioridade da tarefa: ${tarefa.prioridade}</p>
+    <form><input type="checkbox"></form>`;
+
+    catalogoTarefas.append(lista);
+  })
 }
+
+botaoSubmeter.addEventListener("click", criarTarefas);
