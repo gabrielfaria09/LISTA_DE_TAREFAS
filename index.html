@@ -9,6 +9,21 @@
 <body>
     <h1>Lista de tarefas</h1>
 
+    <form id="form">
+        <label>Nome da tarefa:</label>
+        <input type="search" onsubmit="return false" id="nomeTarefa">
+        <label>Prioridade:</label>
+        <select id="prioridade">
+            <option>Baixa</option>
+            <option>Média</option>
+            <option>Alta</option>
+        </select>
+        <button type="submit" id="botaoSubmeter">Criar nova tarefa</button>
+    </form>
+    <article id="catalogoTarefas">
+        
+    </article>
+
     <script src="script.js"></script>
 </body>
 </html>
