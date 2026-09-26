@@ -1,10 +1,14 @@
-const tarefas = [];
+const tarefas = []; //Array que guarda os objetos (tarefas)
 
-const nometarefa = document.getElementById("nomeTarefa");
-const prioridade = document.getElementById("prioridade");
-const buscatarefa = document.getElementById("buscaTarefa");
-const catalogoTarefas = document.getElementById("catalogoTarefas");
-const botaoSubmeter = document.getElementById("botaoSubmeter");
+const nometarefa = document.getElementById("nomeTarefa"); //nome da tarefa digitada
+const prioridade = document.getElementById("prioridade"); //prioridade da tarefa escolhida
+const busca = document.getElementById("busca"); //select de busca por status
+const filtrarTarefa = document.getElementById("filtrarTarefa"); //botão que executa a filtragem
+const catalogoTarefas = document.getElementById("catalogoTarefas"); //article que armazena cada terefa
+const botaoSubmeter = document.getElementById("botaoSubmeter"); //botão de criar e exibir tarefas
+
+//Função criar tarefas, com .push para adicionar novo objeto, caso
+//não haja nome, não será criada
 
 function criarTarefas() {
   if (!nometarefa.value.trim()) return;
@@ -18,42 +22,52 @@ function criarTarefas() {
   exibirTarefas();
 }
 
-function exibirTarefas() {
+function exibirTarefas(lista = tarefas) {
   catalogoTarefas.innerHTML = "";
 
-  tarefas.forEach((tarefa, index) => {
-    const lista = document.createElement("li");
+  lista.forEach((tarefa, index) => {
+    const itemLista = document.createElement("li");
     const campoStatus = tarefa.status === "Concluída" 
       ? `<p class="verificar">"${tarefa.status}"</p>` 
       : `<p class="verificar"><input type="checkbox" class="check"> ${tarefa.status}</p>`;
     
-    lista.classList.add("lista");
-    lista.innerHTML = `
+    itemLista.classList.add("lista");
+    itemLista.innerHTML = `
       <p>Nome da tarefa: ${tarefa.titulo}</p>
       <p>Prioridade da tarefa: ${tarefa.prioridade}</p>
       ${campoStatus}
     `;
 
-    const check = lista.querySelector(".check");
+    const check = itemLista.querySelector(".check");
 
     if (check) {
       check.addEventListener("change", () => {
         if (check.checked) {
           setTimeout(() => {
             tarefa.status = "Concluída";
-            exibirTarefas();
+            filtraTarefa();
           }, 1000);
         }
       });
     }
 
-    catalogoTarefas.appendChild(lista);
+    catalogoTarefas.appendChild(itemLista);
   });
 }
 
-function buscaTarefa(){
-  Object.values(tarefas).includes(buscaTarefa.value);
+function filtraTarefa() {
+  let resultadoFiltro = [];
+
+  if (busca.value === "Concluídas") {
+    resultadoFiltro = tarefas.filter(tarefa => tarefa.status === "Concluída");
+  } else if (busca.value === "Em andamento") {
+    resultadoFiltro = tarefas.filter(tarefa => tarefa.status === "Tarefa em andamento");
+  } else {
+    resultadoFiltro = tarefas;
+  }
+
+      exibirTarefas(resultadoFiltro);
 }
 
-
 botaoSubmeter.addEventListener("click", criarTarefas);
+filtrarTarefa.addEventListener("click", filtraTarefa);
