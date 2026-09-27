@@ -7,11 +7,14 @@ const prioridade = document.getElementById("prioridade"); //prioridade da tarefa
 const busca = document.getElementById("busca"); //select de busca por status da tarefa
 const catalogoTarefas = document.getElementById("catalogoTarefas"); //article que armazena cada terefa
 const botaoSubmeter = document.getElementById("botaoSubmeter"); //botão de criar e exibir tarefas
+const exibeEstatisticas = document.getElementById("exibeEstatisticas");//article que armazena estatísticas
+let totalTarefas = Number(localStorage.getItem("totalTarefas")) || 0; //número total de tarefas criadas
+let totalConcluidas = Number(localStorage.getItem("totalConcluidas")) || 0; //número total de tarefas concluídas
 
 //Criar tarefas, com .push para adicionar novo objeto, caso
 //não haja nome, não será criada.
 
-function criarTarefas() {
+function criaTarefas() {
   if (!nometarefa.value.trim()) return;
 
   tarefas.push({ id: Date.now(), titulo: nometarefa.value, prioridade: prioridade.value,
@@ -19,6 +22,8 @@ function criarTarefas() {
   
   nometarefa.value = "";
   prioridade.value = "";
+
+  totalTarefas += 1;
 
   exibirTarefas();
   salvaTarefa();
@@ -55,6 +60,7 @@ function exibirTarefas(lista = tarefas) {
         if (check.checked) {
           setTimeout(() => {
             tarefa.status = "Concluída";
+            totalConcluidas += 1;
             filtraTarefa();
             salvaTarefa();
           }, 1000);
@@ -65,11 +71,13 @@ function exibirTarefas(lista = tarefas) {
     //Se o botão deletar for clicado, a função deletar é executada.
 
     const deletar = itemLista.querySelector(".deletar");
+
     deletar.addEventListener("click", () => {
       deletaTarefa(tarefa.id);
     });
 
     catalogoTarefas.appendChild(itemLista);
+    estatisticas();
   });
 }
 
@@ -90,10 +98,13 @@ function filtraTarefa() {
       exibirTarefas(resultadoFiltro);
 }
 
-//Salva as tarefas em JSON para não perdê-las ao recarregar a página.
+//Salva as tarefas em JSON para não perdê-las ao recarregar a página, além do
+//número de tarefas criadas e concluídas.
 
 function salvaTarefa(){
   localStorage.setItem("tarefas", JSON.stringify(tarefas));
+  localStorage.setItem("totalTarefas", totalTarefas);
+  localStorage.setItem("totalConcluidas", totalConcluidas);
 }
 
 //Deleta tarefa,a função encontra o index exato com base em qual id
@@ -110,9 +121,17 @@ function deletaTarefa(id) {
   }
 }
 
+function estatisticas(){
+  exibeEstatisticas.innerHTML = `
+  <p>Total de tarefas criadas até hoje: ${totalTarefas}</p>
+  <p>Total de tarefas concluídas até hoje: ${totalConcluidas}</p>
+  `;
+}
+
 //Chamando as funções necessárias (criar para o botão criar, filtrar para a opção filtrar).
 
-botaoSubmeter.addEventListener("click", criarTarefas);
+botaoSubmeter.addEventListener("click", criaTarefas);
 busca.addEventListener("change", filtraTarefa);
 
 exibirTarefas();
+estatisticas();
