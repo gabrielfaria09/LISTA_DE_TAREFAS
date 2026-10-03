@@ -83,6 +83,7 @@ main.pd-app {
 #catalogoTarefas {
   margin: 0; padding: .35rem 1.1rem; list-style: none;
   background: var(--base); border-radius: 20px; box-shadow: var(--afundo);
+  line-height: 1.5rem;
 }
 li.lista {
   --marca: var(--lilas);

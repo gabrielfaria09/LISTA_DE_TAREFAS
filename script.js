@@ -57,7 +57,7 @@ function exibirTarefas(lista = tarefas) {
     itemLista.innerHTML = `
       <p>Nome da tarefa: ${tarefa.titulo}</p>
       <div class="meta">
-        <p>Prioridade da tarefa: ${tarefa.prioridade}</p>
+        <p>Prioridade: ${tarefa.prioridade}</p>
         ${campoStatus}
       </div>
       <button class="deletar">Excluir</button>
