@@ -1,37 +1,64 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR" data-bs-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lista de tarefas</title>
+    <meta name="theme-color" content="#2b2340" />
+    <title>Pindrop · Fixe e conclua</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpolygon points='12,4 36,4 30,18 18,18' fill='%23c9b0ff'/%3E%3Cpolygon points='12,4 18,18 2,18' fill='%23a77cff'/%3E%3Cpolygon points='36,4 46,18 30,18' fill='%238a5af0'/%3E%3Cpolygon points='2,18 18,18 24,54' fill='%236d3fd1'/%3E%3Cpolygon points='18,18 30,18 24,54' fill='%238451e6'/%3E%3Cpolygon points='30,18 46,18 24,54' fill='%235a2fb8'/%3E%3C/svg%3E" />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
-    <h1>Lista de tarefas</h1>
+  <body class="d-flex align-items-center min-vh-100">
+    <main class="container pd-app">
+       <header class="pd-marca d-flex align-items-center gap-3">
+        <span class="pd-logo" aria-hidden="true">
+          <svg viewBox="0 0 48 56">
+            <path d="M22 3C33 2 43 12 41 25C40 37 30 44 25 53C18 46 5 38 6 24C6 12 13 4 22 3Z" fill="#5a2fb8" />
+            <path d="M6 24C14 21 20 14 22 3C25 20 26 38 25 53C18 46 5 38 6 24Z" fill="#8451e6" />
+            <path d="M22 3C13 4 6 12 6 24C14 21 20 14 22 3Z" fill="#c9b0ff" />
+            <path d="M22 3C25 15 33 22 41 25C43 12 33 2 22 3Z" fill="#a77cff" />
+            <path d="M15 12C17 9 20 7 22 6C19 10 17 14 15 18Z" fill="#f1ecff" />
+          </svg>
+        </span>
+        <div>
+          <h1>Pindrop</h1>
+          <p>Fixe e conclua</p>
+        </div>
+      </header>
+      <form id="form" onsubmit="return false" class="row g-3 align-items-end pd-form">
+        <div class="col-12">
+          <label for="nomeTarefa" class="form-label">Nome da tarefa</label>
+          <input type="search" id="nomeTarefa" class="form-control" placeholder="O que precisa ser feito?" />
+        </div>
+        <div class="col-5 col-sm-4">
+          <label for="prioridade" class="form-label">Prioridade</label>
+          <select id="prioridade" class="form-select">
+            <option>Baixa</option>
+            <option>Média</option>
+            <option>Alta</option>
+          </select>
+        </div>
+        <div class="col-7 col-sm-8">
+          <button type="button" id="botaoSubmeter" class="btn pd-btn w-100">Fixar tarefa</button>
+        </div>
+      </form>
+      <div class="pd-barra d-flex align-items-center justify-content-between">
+        <h2>Tarefas</h2>
+        <select id="busca" class="form-select form-select-sm" aria-label="Filtrar por status">
+          <option>Todas</option>
+          <option>Concluídas</option>
+          <option>Em andamento</option>
+        </select>
+      </div>
+      <article>
+        <ul id="catalogoTarefas"></ul>
+      </article>
+      <article id="exibeEstatisticas"></article>
+    </main>
 
-    <form id="form" onsubmit="return false;">
-      <label>Nome da tarefa:</label>
-      <input type="search" id="nomeTarefa" />
-      <select id="busca">
-        <option>Todas</option>
-        <option>Concluídas</option>
-        <option>Em andamento</option>
-      </select>
-      <label>Prioridade:</label>
-      <select id="prioridade">
-        <option>Baixa</option>
-        <option>Média</option>
-        <option>Alta</option>
-      </select>
-      <button type="button" id="botaoSubmeter">Criar nova tarefa</button>
-    </form>
-    <article>
-      <ul id="catalogoTarefas"></ul>
-    </article>
-    <article id="exibeEstatisticas">
-
-    </article>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

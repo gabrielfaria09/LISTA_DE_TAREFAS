@@ -21,7 +21,6 @@ function criaTarefas() {
     status: "Tarefa em andamento"});
   
   nometarefa.value = "";
-  prioridade.value = "";
 
   totalTarefas += 1;
 
@@ -36,18 +35,31 @@ function criaTarefas() {
 function exibirTarefas(lista = tarefas) {
   catalogoTarefas.innerHTML = "";
 
+  //Estado vazio: orienta o que fazer em vez de mostrar uma lista em branco.
+  if (lista.length === 0) {
+    const vazio = document.createElement("li");
+    vazio.classList.add("vazio");
+    vazio.textContent = tarefas.length === 0
+      ? "Nada fixado ainda. Escreva uma tarefa acima para começar."
+      : "Nenhuma tarefa neste filtro.";
+    catalogoTarefas.appendChild(vazio);
+  }
+
   lista.forEach((tarefa, index) => {
     //Manipulação do DOM
     const itemLista = document.createElement("li");
     const campoStatus = tarefa.status === "Concluída" 
-      ? `<p class="verificar">"${tarefa.status}"</p>` 
+      ? `<p class="verificar">${tarefa.status}</p>` 
       : `<p class="verificar"><input type="checkbox" class="check"> ${tarefa.status}</p>`;
     
     itemLista.classList.add("lista");
+    itemLista.dataset.prioridade = tarefa.prioridade;
     itemLista.innerHTML = `
       <p>Nome da tarefa: ${tarefa.titulo}</p>
-      <p>Prioridade da tarefa: ${tarefa.prioridade}</p>
-      ${campoStatus}
+      <div class="meta">
+        <p>Prioridade da tarefa: ${tarefa.prioridade}</p>
+        ${campoStatus}
+      </div>
       <button class="deletar">Excluir</button>
     `;
 
@@ -123,8 +135,8 @@ function deletaTarefa(id) {
 
 function estatisticas(){
   exibeEstatisticas.innerHTML = `
-  <p>Total de tarefas criadas até hoje: ${totalTarefas}</p>
-  <p>Total de tarefas concluídas até hoje: ${totalConcluidas}</p>
+  <p><strong>${totalTarefas}</strong> tarefas criadas</p>
+  <p><strong>${totalConcluidas}</strong> tarefas concluídas</p>
   `;
 }
 
