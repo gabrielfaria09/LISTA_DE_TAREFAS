@@ -25,7 +25,11 @@ body {
   box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.2);
 }
 
-.badge-prioridade {
+.badge-prioridade{
   background: #ede9fe;
   color: #5b21b6;
+}
+
+#botaoReiniciar{
+  background-color: #7c3aed;
 }

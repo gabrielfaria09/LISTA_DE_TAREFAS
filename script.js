@@ -8,6 +8,7 @@ const busca = document.getElementById("busca"); //select de busca por status da 
 const catalogoTarefas = document.getElementById("catalogoTarefas"); //lista que armazena cada tarefa
 const botaoSubmeter = document.getElementById("botaoSubmeter"); //botão de criar e exibir tarefas
 const exibeEstatisticas = document.getElementById("exibeEstatisticas");//article que armazena estatísticas
+const botaoReiniciar = document.getElementById("botaoReiniciar");//botão de reiniciar histórico
 let totalTarefas = Number(localStorage.getItem("totalTarefas")) || 0; //número total de tarefas criadas
 let totalConcluidas = Number(localStorage.getItem("totalConcluidas")) || 0; //número total de tarefas concluídas
 
@@ -136,6 +137,7 @@ function deletaTarefa(id) {
   }
 }
 
+
 function estatisticas(){
   exibeEstatisticas.innerHTML = `
     <div class="col-6">
@@ -153,9 +155,21 @@ function estatisticas(){
   `;
 }
 
-//Chamando as funções necessárias (criar para o botão criar, filtrar para a opção filtrar).
+//Deleta o histórico de tarefas criadas e concluídas até hoje, com o clique do botão
+// "reiniciar histórico"
+
+function reiniciaHistorico(){
+  totalTarefas = 0;
+  totalConcluidas = 0;
+
+  estatisticas();
+}
+
+//Chamando as funções necessárias (criar para o botão criar, filtrar para a opção filtrar,
+// reiniciar para o botão reiniciar).
 
 botaoSubmeter.addEventListener("click", criaTarefas);
 busca.addEventListener("change", filtraTarefa);
+botaoReiniciar.addEventListener("click", reiniciaHistorico);
 
 exibirTarefas();
