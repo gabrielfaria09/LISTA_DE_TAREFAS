@@ -5,7 +5,7 @@ const tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
 const nometarefa = document.getElementById("nomeTarefa"); //nome da tarefa digitada
 const prioridade = document.getElementById("prioridade"); //prioridade da tarefa escolhida
 const busca = document.getElementById("busca"); //select de busca por status da tarefa
-const catalogoTarefas = document.getElementById("catalogoTarefas"); //article que armazena cada terefa
+const catalogoTarefas = document.getElementById("catalogoTarefas"); //lista que armazena cada tarefa
 const botaoSubmeter = document.getElementById("botaoSubmeter"); //botão de criar e exibir tarefas
 const exibeEstatisticas = document.getElementById("exibeEstatisticas");//article que armazena estatísticas
 let totalTarefas = Number(localStorage.getItem("totalTarefas")) || 0; //número total de tarefas criadas
@@ -19,12 +19,13 @@ function criaTarefas() {
 
   tarefas.push({ id: Date.now(), titulo: nometarefa.value, prioridade: prioridade.value,
     status: "Tarefa em andamento"});
-  
+
   nometarefa.value = "";
+  prioridade.value = "Baixa";
 
   totalTarefas += 1;
 
-  exibirTarefas();
+  filtraTarefa();
   salvaTarefa();
 }
 
@@ -35,62 +36,64 @@ function criaTarefas() {
 function exibirTarefas(lista = tarefas) {
   catalogoTarefas.innerHTML = "";
 
-  //Estado vazio: orienta o que fazer em vez de mostrar uma lista em branco.
   if (lista.length === 0) {
-    const vazio = document.createElement("li");
-    vazio.classList.add("vazio");
-    vazio.textContent = tarefas.length === 0
-      ? "Nada fixado ainda. Escreva uma tarefa acima para começar."
-      : "Nenhuma tarefa neste filtro.";
-    catalogoTarefas.appendChild(vazio);
+    catalogoTarefas.innerHTML = `
+      <li class="list-group-item text-center text-secondary px-4 py-4">Nenhuma tarefa por aqui.</li>
+    `;
   }
 
-  lista.forEach((tarefa, index) => {
+  const classesPrioridade = {
+    Alta: "bg-danger-subtle text-danger-emphasis",
+    Média: "bg-warning-subtle text-warning-emphasis",
+    Baixa: "badge-prioridade"
+  };
+
+  lista.forEach((tarefa) => {
     //Manipulação do DOM
+    const concluida = tarefa.status === "Concluída";
     const itemLista = document.createElement("li");
-    const campoStatus = tarefa.status === "Concluída" 
-      ? `<p class="verificar">${tarefa.status}</p>` 
-      : `<p class="verificar"><input type="checkbox" class="check"> ${tarefa.status}</p>`;
-    
-    itemLista.classList.add("lista");
-    itemLista.dataset.prioridade = tarefa.prioridade;
+    itemLista.className = "list-group-item d-flex align-items-center gap-3 px-4 py-3";
+
     itemLista.innerHTML = `
-      <p>Nome da tarefa: ${tarefa.titulo}</p>
-      <div class="meta">
-        <p>Prioridade: ${tarefa.prioridade}</p>
-        ${campoStatus}
+      <input type="checkbox" class="check form-check-input mt-0" aria-label="Concluir tarefa"
+        ${concluida ? "checked disabled" : ""}>
+      <div class="flex-grow-1">
+        <div class="titulo fw-medium ${concluida ? "text-decoration-line-through text-secondary" : ""}"></div>
+        <span class="badge rounded-pill ${classesPrioridade[tarefa.prioridade] || ""}">${tarefa.prioridade}</span>
+        <small class="text-secondary ms-1">${concluida ? "Concluída" : "Em andamento"}</small>
       </div>
-      <button class="deletar">Excluir</button>
+      <button class="deletar btn btn-sm btn-outline-secondary">Excluir</button>
     `;
+
+    //textContent evita que o texto digitado seja interpretado como HTML.
+    itemLista.querySelector(".titulo").textContent = tarefa.titulo;
 
     //Se o checkbox for marcado, o status da tarefa muda para concluído.
 
     const check = itemLista.querySelector(".check");
 
-    if (check) {
-      check.addEventListener("change", () => {
-        if (check.checked) {
-          setTimeout(() => {
-            tarefa.status = "Concluída";
-            totalConcluidas += 1;
-            filtraTarefa();
-            salvaTarefa();
-          }, 1000);
-        }
-      });
-    }
+    check.addEventListener("change", () => {
+      if (check.checked) {
+        check.disabled = true;
+        setTimeout(() => {
+          tarefa.status = "Concluída";
+          totalConcluidas += 1;
+          filtraTarefa();
+          salvaTarefa();
+        }, 1000);
+      }
+    });
 
     //Se o botão deletar for clicado, a função deletar é executada.
 
-    const deletar = itemLista.querySelector(".deletar");
-
-    deletar.addEventListener("click", () => {
+    itemLista.querySelector(".deletar").addEventListener("click", () => {
       deletaTarefa(tarefa.id);
     });
 
     catalogoTarefas.appendChild(itemLista);
-    estatisticas();
   });
+
+  estatisticas();
 }
 
 //Filtrar tarefas por status, o resultado da estrutura de decisão é usado
@@ -107,7 +110,7 @@ function filtraTarefa() {
     resultadoFiltro = tarefas;
   }
 
-      exibirTarefas(resultadoFiltro);
+  exibirTarefas(resultadoFiltro);
 }
 
 //Salva as tarefas em JSON para não perdê-las ao recarregar a página, além do
@@ -128,15 +131,25 @@ function deletaTarefa(id) {
 
   if (indexGlobal !== -1) {
     tarefas.splice(indexGlobal, 1);
-    salvaTarefa();              
-    filtraTarefa();               
+    salvaTarefa();
+    filtraTarefa();
   }
 }
 
 function estatisticas(){
   exibeEstatisticas.innerHTML = `
-  <p><strong>${totalTarefas}</strong> tarefas criadas</p>
-  <p><strong>${totalConcluidas}</strong> tarefas concluídas</p>
+    <div class="col-6">
+      <div class="card border-0 shadow-sm rounded-4 p-3">
+        <span class="fs-3 fw-semibold text-primary">${totalTarefas}</span>
+        <small class="text-secondary">Tarefas criadas</small>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="card border-0 shadow-sm rounded-4 p-3">
+        <span class="fs-3 fw-semibold text-primary">${totalConcluidas}</span>
+        <small class="text-secondary">Tarefas concluídas</small>
+      </div>
+    </div>
   `;
 }
 
@@ -146,4 +159,3 @@ botaoSubmeter.addEventListener("click", criaTarefas);
 busca.addEventListener("change", filtraTarefa);
 
 exibirTarefas();
-estatisticas();
